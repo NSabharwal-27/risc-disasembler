@@ -157,16 +157,20 @@ if not os.path.exists('riscv-test.asm'):
 asmFile = open('riscv-test.asm', 'r')
 
 for line in asmFile.readlines():
+    line = line.strip()
+    if line == '' or line.startswith("#"):
+            continue;                       #remove empty lines and comments
     
     #parsing and cleaning up
-    #print(line)                             #let's just print it out to make sure for now
-    split_line = line.rstrip().split()       #strip new line characters
-    print(split_line)                        #for debug
+    #print(line)                             #debug
+    line = line.partition('#')[0]
+    split_line = re.split(r'[,\s()]+', line)
     
-    #op identifier
+    split_line = [token for token in split_line if token != '']
+    #print(split_line)                        #for debug
+    
+    mnemonic = split_line[0]
     opType = op_type.get(split_line[0])
+    print(opType)
     
-    #retrieve opcode funct3 func7
-    opCode = op_code.get(opType)
-    funct3 = op_funct3.get(split_line[0])
 asmFile.close()
