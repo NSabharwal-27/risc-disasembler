@@ -149,6 +149,21 @@ registers = {
     'x31': 31, 't6': 31,
 }
 
+def get_register(reg_string):
+    reg_string = reg_string.strip(',')
+    if reg_string in registers:
+        return registers[reg_string]
+    else:
+        print(f"Error: Unknown register {reg_string}")
+        sys.exit(1)
+        
+
+def assemble_r_type(opcode, rd, funct3, rs1, rs2, funct7):
+    instruction = (funct7 << 25) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) | (rd << 7) | opcode
+    bin_instr = bin(instruction)
+    print(bin_instr)
+    return instruction
+
 # Open the assembly file
 if not os.path.exists('riscv-test.asm'):
     print("Error: 'riscv-test.asm' file not found.")
@@ -171,6 +186,30 @@ for line in asmFile.readlines():
     
     mnemonic = split_line[0]
     opType = op_type.get(split_line[0])
-    print(opType)
+    #print(opType)
     
+    if opType is None:
+        print(f"Error: Unknown instruction {mnemonic}")
+        continue
+    
+    opCode = op_code.get(opType)
+    machinecode = 0
+    
+    if opType == 'r_opType':
+        #format is mnemonic rd, r1, r2
+        #also require funct7, funct3
+        rd = get_register(split_line[1])
+        r1 = get_register(split_line[2])
+        r2 = get_register(split_line[3])
+        func7 = op_funct7.get(mnemonic)
+        func3 = op_funct3.get(mnemonic)
+        machinecode = assemble_r_type(opCode, rd, func3, r1, r2, func7)
+    
+    elif opType == 'i_opType':
+        #format is mnmemonic rd, rs1, imm_Value
+        #also require funct3
+        rd = get_register(split_line[1])
+        r1 = get_register(split_line[2])
+        
+        func3 = op_funct3.get(mnemonic)
 asmFile.close()
