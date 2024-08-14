@@ -4,8 +4,6 @@ import re
 import utils
 from lookup_table import registers, op_type, op_code, op_funct7, op_funct3
 
-
-
 # Open the assembly file
 if not os.path.exists('riscv-test.asm'):
     print("Error: 'riscv-test.asm' file not found.")
@@ -24,7 +22,7 @@ for line in asmFile.readlines():
     split_line = re.split(r'[,\s()]+', line)
     
     split_line = [token for token in split_line if token != '']
-    #print(split_line)                        #for debug
+    print(split_line)                        #for debug
     
     mnemonic = split_line[0]
     opType = op_type.get(split_line[0])
@@ -47,15 +45,30 @@ for line in asmFile.readlines():
         func3 = op_funct3.get(mnemonic)
         machinecode = utils.assemble_r_type(opCode, rd, func3, r1, r2, func7)
     
-    elif opType == 'i_opType':
+    elif opType == 'i_opType' or opType == 'i_loadType':
         #format is mnmemonic rd, rs1, imm_Value
+        #or mnemonic rd, imm(rs1)
         #also require funct3
         rd = utils.get_register(split_line[1])
-        r1 = utils.get_register(split_line[2])
-        imm = utils.parse_immediate(split_line[3])
         func3 = op_funct3.get(mnemonic)
-        machinecode = utils.assemble_i_type(opCode, rd, func3, r1, imm)
         
+        if opType == 'i_opType':
+            r1 = utils.get_register(split_line[2])
+            imm = utils.parse_immediate(split_line[3])
+        else :
+            imm = utils.parse_immediate(split_line[2])
+            r1 = utils.get_register(split_line[3])
+        
+        machinecode = utils.assemble_i_type(opCode, rd, func3, r1, imm)
+       
+    elif opType == 's_opType':
+        #format is mnemonic rd, offset(rs1)
+        #also require funct3
+        rd = utils.get_register(split_line[1])
+        r1 = utils.get_register(split_line[3])
+        imm = utils.parse_immediate(split_line[2])
+        func3 = op_funct3.get(mnemonic)
+        machinecode = utils.assemble_s_type(opCode, imm, func3, rd, r1)
         
     
 asmFile.close()

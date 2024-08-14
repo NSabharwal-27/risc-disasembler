@@ -15,7 +15,6 @@ def parse_immediate(imm_str):
         return int(imm_str, 16)
     
     return int(imm_str)
-        
 
 def assemble_r_type(opcode, rd, funct3, rs1, rs2, funct7):
     instruction = (funct7 << 25) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) | (rd << 7) | opcode
@@ -31,3 +30,5 @@ def assemble_i_type(opcode, rd, funct3, rs1, imm):
     print(bin_instr)
     return bin_instr
 
+def assemble_s_type(opcode, imm, funct3, rd, r1):
+    return 0
