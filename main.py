@@ -1,6 +1,4 @@
 import os
-
-import os
 import sys
 import re
 
@@ -157,12 +155,28 @@ def get_register(reg_string):
         print(f"Error: Unknown register {reg_string}")
         sys.exit(1)
         
+def parse_immediate(imm_str):
+    # Check if the string starts with '0x' or '0X' indicating hexadecimal
+    if imm_str.startswith('0x') or imm_str.startswith('0X'):
+        return int(imm_str, 16)
+    
+    return int(imm_str)
+        
 
 def assemble_r_type(opcode, rd, funct3, rs1, rs2, funct7):
     instruction = (funct7 << 25) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) | (rd << 7) | opcode
-    bin_instr = bin(instruction)
+    bin_instr = format(instruction, '032b')
     print(bin_instr)
-    return instruction
+    return bin_instr
+
+def assemble_i_type(opcode, rd, funct3, rs1, imm):
+    # Ensure imm is masked to 12 bits
+    imm &= 0xFFF
+    instruction = (imm) | (rs1 << 15) | (funct3 << 12) | (rd << 7) | opcode
+    bin_instr = format(instruction, '032b')
+    print(bin_instr)
+    return bin_instr
+
 
 # Open the assembly file
 if not os.path.exists('riscv-test.asm'):
@@ -210,6 +224,7 @@ for line in asmFile.readlines():
         #also require funct3
         rd = get_register(split_line[1])
         r1 = get_register(split_line[2])
-        
+        imm = parse_immediate(split_line[3])
         func3 = op_funct3.get(mnemonic)
+        machinecode = assemble_i_type(opCode, rd, func3, r1, imm)
 asmFile.close()
