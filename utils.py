@@ -30,5 +30,11 @@ def assemble_i_type(opcode, rd, funct3, rs1, imm):
     print(bin_instr)
     return bin_instr
 
-def assemble_s_type(opcode, imm, funct3, rd, r1):
-    return 0
+def assemble_s_type(opcode, imm, funct3, rs1, rs2):
+    imm &= 0xfff  # 12-bit immediate
+    imm11_5 = (imm >> 5) & 0x7f
+    imm4_0 = imm & 0x1f
+    instruction = (imm11_5 << 25) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) | (imm4_0 << 7) | opcode
+    bin_instr = format(instruction, '032b')
+    print(bin_instr)
+    return instruction

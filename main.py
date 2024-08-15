@@ -58,7 +58,6 @@ for line in asmFile.readlines():
         else :
             imm = utils.parse_immediate(split_line[2])
             r1 = utils.get_register(split_line[3])
-        
         machinecode = utils.assemble_i_type(opCode, rd, func3, r1, imm)
        
     elif opType == 's_opType':
