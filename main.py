@@ -69,5 +69,11 @@ for line in asmFile.readlines():
         func3 = op_funct3.get(mnemonic)
         machinecode = utils.assemble_s_type(opCode, imm, func3, rd, r1)
         
-    
+    elif opType == 'b_opType':
+        #format is mnemonic rs1, rs2, imm
+        #also need func3
+        r1 = utils.get_register(split_line[1])
+        r2 = utils.get_register(split_line[2])
+        imm = utils.parse_immediate(split_line[3])
+        func3 = op_funct3.get(mnemonic)
 asmFile.close()
