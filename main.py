@@ -86,4 +86,18 @@ for line in asmFile.readlines():
         rd = utils.get_register(split_line[1])
         imm = utils.parse_immediate(split_line[2])
         machine_code = utils.assemble_u_type(opCode, rd, imm)
+        
+    elif opType == 'j_opType':
+        # Format: instr rd, imm
+        if len(split_line) != 3:
+            print(f"Error: Incorrect number of operands for {mnemonic}")
+            continue
+        rd = utils.get_register(split_line[1])
+        imm = utils.parse_immediate(split_line[2])
+        machine_code = utils.assemble_j_type(opCode, rd, imm)
+    else:
+        print(f"Error: Unsupported operation type {opType}")
+        continue
+
+    #print(f"{line:<30} => {machine_code:032b} => 0x{machine_code:08x}")
 asmFile.close()

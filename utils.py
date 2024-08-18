@@ -46,9 +46,24 @@ def assemble_b_type(opcode, funct3, rs1, rs2, imm):
     imm4_1 = (imm >> 1) & 0xf
     imm11 = (imm >> 11) & 0x1
     instruction = (imm12 << 31) | (imm11 << 7) | (imm10_5 << 25) | (imm4_1 << 8) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) | opcode
+    bin_instr = format(instruction, '032b')
+    print(bin_instr)
     return instruction
 
 def assemble_u_type(opcode, rd, imm):
     imm &= 0xfffff000  # upper 20 bits
     instruction = (imm) | (rd << 7) | opcode
+    bin_instr = format(instruction, '032b')
+    print(bin_instr)
+    return instruction
+
+def assemble_j_type(opcode, rd, imm):
+    imm &= 0x1fffff  # 21-bit immediate
+    imm20 = (imm >> 20) & 0x1
+    imm10_1 = (imm >> 1) & 0x3ff
+    imm11 = (imm >> 11) & 0x1
+    imm19_12 = (imm >> 12) & 0xff
+    instruction = (imm20 << 31) | (imm19_12 << 12) | (imm11 << 20) | (imm10_1 << 21) | (rd << 7) | opcode
+    bin_instr = format(instruction, '032b')
+    print(bin_instr)
     return instruction
