@@ -72,9 +72,18 @@ for line in asmFile.readlines():
     elif opType == 'b_opType':
         #format is mnemonic rs1, rs2, imm
         #also need func3
-        r1 = utils.get_register(split_line[1])
-        r2 = utils.get_register(split_line[2])
+        rs1 = utils.get_register(split_line[1])
+        rs2 = utils.get_register(split_line[2])
         imm = utils.parse_immediate(split_line[3])
         func3 = op_funct3.get(mnemonic)
-        #machinecode = utils.assemble_b_type(o)
+        machine_code = utils.assemble_b_type(opCode, func3, rs1, rs2, imm)
+        
+    elif opType == 'u_opType':
+        # Format: instr rd, imm
+        if len(split_line) != 3:
+            print(f"Error: Incorrect number of operands for {mnemonic}")
+            continue
+        rd = utils.get_register(split_line[1])
+        imm = utils.parse_immediate(split_line[2])
+        machine_code = utils.assemble_u_type(opCode, rd, imm)
 asmFile.close()

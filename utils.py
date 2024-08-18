@@ -47,3 +47,8 @@ def assemble_b_type(opcode, funct3, rs1, rs2, imm):
     imm11 = (imm >> 11) & 0x1
     instruction = (imm12 << 31) | (imm11 << 7) | (imm10_5 << 25) | (imm4_1 << 8) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) | opcode
     return instruction
+
+def assemble_u_type(opcode, rd, imm):
+    imm &= 0xfffff000  # upper 20 bits
+    instruction = (imm) | (rd << 7) | opcode
+    return instruction
