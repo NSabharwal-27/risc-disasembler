@@ -38,3 +38,12 @@ def assemble_s_type(opcode, imm, funct3, rs1, rs2):
     bin_instr = format(instruction, '032b')
     print(bin_instr)
     return instruction
+
+def assemble_b_type(opcode, funct3, rs1, rs2, imm):
+    imm &= 0x1fff  # 13-bit immediate for branch
+    imm12 = (imm >> 12) & 0x1
+    imm10_5 = (imm >> 5) & 0x3f
+    imm4_1 = (imm >> 1) & 0xf
+    imm11 = (imm >> 11) & 0x1
+    instruction = (imm12 << 31) | (imm11 << 7) | (imm10_5 << 25) | (imm4_1 << 8) | (rs2 << 20) | (rs1 << 15) | (funct3 << 12) | opcode
+    return instruction

@@ -76,4 +76,5 @@ for line in asmFile.readlines():
         r2 = utils.get_register(split_line[2])
         imm = utils.parse_immediate(split_line[3])
         func3 = op_funct3.get(mnemonic)
+        #machinecode = utils.assemble_b_type(o)
 asmFile.close()
